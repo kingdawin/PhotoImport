@@ -26,10 +26,12 @@ public class MainActivity extends Activity {
         startActivity(new Intent(this, ViewPagerActivity.class));
     }
 
+
     //单个Imageview点击放大
     public void imgclick(View view) {
         startActivity(new Intent(this, ImgClick.class));
     }
+
     //ImageView点击浏览大图
     public void photobrowse(View view) {
         startActivity(new Intent(this, PhotoBrowse.class));
@@ -37,5 +39,10 @@ public class MainActivity extends Activity {
 
     public void imageview(View view) {
         startActivity(new Intent(this, ImageViewActivity.class));
+    }
+
+    public void loadLargeImageView(View view)
+    {
+       startActivity(new Intent(this,LargeImageViewActivity.class));
     }
 }

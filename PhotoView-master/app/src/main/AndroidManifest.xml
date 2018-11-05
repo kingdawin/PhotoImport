@@ -22,9 +22,7 @@
         <activity
             android:name=".ImgActivity"
             android:label="@string/title_activity_img"
-            android:screenOrientation="landscape"
-            >
-      </activity>
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".ViewPagerActivity"
             android:label="@string/title_activity_view_pager" />
@@ -35,7 +33,8 @@
             android:name=".PhotoBrowse"
             android:label="@string/title_activity_photo_browse" />
         <activity android:name=".ImageViewActivity" />
-        <!--<activity android:name=".ImageTransformActivity"></activity>-->
+        <!-- <activity android:name=".ImageTransformActivity"></activity> -->
+        <activity android:name=".LargeImageViewActivity"></activity>
     </application>
 
 </manifest>
