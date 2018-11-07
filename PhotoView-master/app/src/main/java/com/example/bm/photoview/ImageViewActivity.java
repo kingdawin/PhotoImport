@@ -1,15 +1,9 @@
 package com.example.bm.photoview;
 
 import android.app.Activity;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.Scroller;
 
 import com.bm.library.Info;
 import com.bm.library.PhotoView;

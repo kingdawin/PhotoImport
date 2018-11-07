@@ -39,7 +39,7 @@ public class LargeImageView extends View
      * 绘制的区域
      */
     private volatile Rect mRect = new Rect();
-
+    //监听滑动手势
     private MoveGestureDetector mDetector;
 
 
@@ -52,20 +52,31 @@ public class LargeImageView extends View
         options.inPreferredConfig = Bitmap.Config.RGB_565;
     }
 
+    public void initImageWidthHeight()
+    {
+        mImageWidth = mDecoder.getWidth();
+        mImageHeight = mDecoder.getHeight();
+    }
+
     public void setInputStream(InputStream is)
     {
         try
         {
 //            mDecoder = BitmapRegionDecoder.newInstance(is, false);//此代码要在获取宽高之后执行，否则，获取的宽高为-1
-            BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
+
+            //-----------使用initImageWidthHeight代替-------------------------
+           /* BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
             // Grab the bounds for the scene dimensions
             tmpOptions.inJustDecodeBounds = true;
 
             BitmapFactory.decodeStream(is, null, tmpOptions);
             mImageWidth = tmpOptions.outWidth;
-            mImageHeight = tmpOptions.outHeight;
-            Log.i(TAG,"setInputStream mImageWidth="+mImageWidth+" mImageHeight="+mImageHeight);
+            mImageHeight = tmpOptions.outHeight;*/
+            //-----------------------------------------------------------------
+
             mDecoder = BitmapRegionDecoder.newInstance(is, false);
+            initImageWidthHeight();
+            Log.i(TAG,"setInputStream mImageWidth="+mImageWidth+" mImageHeight="+mImageHeight);
             requestLayout();
             invalidate();
         } catch (IOException e)
@@ -83,7 +94,7 @@ public class LargeImageView extends View
         }
     }
 
-
+    //创建滑动监听实例
     public void init()
     {
         mDetector = new MoveGestureDetector(getContext(), new MoveGestureDetector.SimpleMoveGestureDetector()
@@ -188,9 +199,10 @@ public class LargeImageView extends View
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Log.i(TAG,"onMeasure");
+        //view的宽高
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-
+        //图片宽高
         int imageWidth = mImageWidth;
         int imageHeight = mImageHeight;
 

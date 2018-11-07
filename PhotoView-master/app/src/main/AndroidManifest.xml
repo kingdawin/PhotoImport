@@ -32,9 +32,8 @@
         <activity
             android:name=".PhotoBrowse"
             android:label="@string/title_activity_photo_browse" />
-        <activity android:name=".ImageViewActivity" />
-        <!-- <activity android:name=".ImageTransformActivity"></activity> -->
-        <activity android:name=".LargeImageViewActivity"></activity>
+        <activity android:name=".ImageViewActivity"/>
+        <activity android:name=".worldmapviewDemo.ImageViewerActivity"/>
     </application>
 
 </manifest>

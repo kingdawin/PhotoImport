@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.bm.photoview.worldmapviewDemo.ImageViewerActivity;
+
 /**
  * Created by liuheng on 2015/6/21.
  */
@@ -44,5 +46,9 @@ public class MainActivity extends Activity {
     public void loadLargeImageView(View view)
     {
        startActivity(new Intent(this,LargeImageViewActivity.class));
+    }
+    public void loadLargeSurfaceViewImage(View view)
+    {
+        startActivity(new Intent(this,ImageViewerActivity.class));
     }
 }
