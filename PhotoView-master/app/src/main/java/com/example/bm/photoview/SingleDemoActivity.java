@@ -1,7 +1,9 @@
 package com.example.bm.photoview;
 
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -10,6 +12,7 @@ import android.widget.ToggleButton;
 
 import com.example.bm.photoview.factory.InputStreamBitmapDecoderFactory;
 import com.example.bm.photoview.largeImageDemo.LargeImageView;
+import com.example.bm.photoview.largeImageDemo.MapScaleView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,18 +22,32 @@ import java.io.InputStream;
 public class SingleDemoActivity extends FragmentActivity {
     private LargeImageView largeImageView;
     private ToggleButton toggleButton;
-
+    private ToggleButton mapScaleButton;
+    MapScaleView mapScaleView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singledemo);
+        mapScaleView=(MapScaleView)findViewById(R.id.mapScaleView);
+        mapScaleView.calculateMeterPerPix(new PointF(10,10),new PointF(10,20));
         largeImageView =(LargeImageView)findViewById(R.id.imageView);
         toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-
+        mapScaleButton=(ToggleButton)findViewById(R.id.mapScaleViewButton);
         toggleButton.setOnCheckedChangeListener(onCheckedChangeListener);
+        mapScaleButton.setOnCheckedChangeListener(onCheckedChangeListener);
         largeImageView.setOnClickListener(onClickListener);
         largeImageView.setOnLongClickListener(onLongClickListener);
         largeImageView.setOnDoubleClickListener(onDoubleClickListener);
+        largeImageView.setOnScaleListener(new LargeImageView.OnScaleListener() {
+            @Override
+            public void onScale(float scale) {
+                Log.i("xxxx","onScale");
+                //在这里进行比例尺宽和现实值计算
+                mapScaleView.updateMapScaleView(scale);
+                mapScaleView.invalidate();
+            }
+        });
+
         try {
 //            String fileName = getIntent().getStringExtra("file_name");
             InputStream inputStream = getAssets().open("aaa.jpg");
@@ -67,7 +84,25 @@ public class SingleDemoActivity extends FragmentActivity {
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            largeImageView.setEnabled(!isChecked);
+            switch (buttonView.getId())
+            {
+                case R.id.toggleButton:
+                    largeImageView.setEnabled(!isChecked);
+
+                    break;
+                case R.id.mapScaleViewButton:
+                    largeImageView.isSettingMapScale=isChecked;
+                    if(!isChecked)
+                    {
+                        if(largeImageView.mapScalePointSetting.size()==2)
+                        {
+                            mapScaleView.init(largeImageView.mapScalePointSetting.get(0),
+                                    largeImageView.mapScalePointSetting.get(1),20,largeImageView.setScale
+                                    );
+                        }
+                    }
+                    break;
+            }
         }
     };
 

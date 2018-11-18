@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -48,6 +49,13 @@ import java.util.List;
  */
 
 public class LargeImageView extends View implements BlockImageLoader.OnImageLoadListener, ILargeImageView {
+    //比例尺设置的开始点，结束点
+    public ArrayList<PointF> mapScalePointSetting=new ArrayList<>();
+    public ArrayList<PointF> mapScalePointForDraw=new ArrayList<>();
+    //设置比例尺
+    public boolean isSettingMapScale;
+    //设置比例尺时的缩放系数
+    public float setScale;
     private final GestureDetector gestureDetector;
     private final ScrollerCompat mScroller;
     private final BlockImageLoader imageBlockImageLoader;
@@ -70,6 +78,17 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
     private DecelerateInterpolator decelerateInterpolator;
     private boolean isAttachedWindow;
 
+    public OnScaleListener onScaleListener;
+
+    public void setOnScaleListener(OnScaleListener onScaleListener)
+    {
+             this.onScaleListener=onScaleListener;
+    }
+    //监听缩放
+    public interface OnScaleListener
+    {
+        void onScale(float scale);
+    }
     public LargeImageView(Context context) {
         this(context, null);
     }
@@ -94,7 +113,7 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
         paint = new Paint();
-        paint.setColor(Color.GRAY);
+        paint.setColor(Color.RED);
         paint.setAntiAlias(true);
     }
 
@@ -450,10 +469,19 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
                     }
                 }
             }
+
+            for(PointF point:mapScalePointForDraw)
+            {
+                canvas.drawPoint(point.x*getScale(),point.y*getScale(),paint);
+            }
             canvas.restoreToCount(saveCount);
         }
     }
+    public void clearPoint()
+    {
+        mapScalePointForDraw.clear();
 
+    }
     private List<BlockImageLoader.DrawData> drawDatas = new ArrayList<>();
 
     private Rect imageRect = new Rect();
@@ -715,6 +743,18 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
         }
 
         @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if(isSettingMapScale&&(mapScalePointSetting.size()<2))
+            {
+                mapScalePointSetting.add(new PointF(e.getX(),e.getY()));
+                mapScalePointForDraw.add(new PointF(e.getX()/getScale()+getScrollX(),e.getY()/getScale()+getScrollY()));
+                invalidate();
+            }
+
+            return super.onSingleTapUp(e);
+        }
+
+        @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (!isEnabled()) {
                 return false;
@@ -819,6 +859,12 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
             } else if (newScale < minScale) {
                 newScale = minScale;
             }
+
+            if(onScaleListener!=null)
+            {
+                onScaleListener.onScale(newScale);
+            }
+
             setScale(newScale, (int) detector.getFocusX(), (int) detector.getFocusY());
             return true;
         }
@@ -850,6 +896,7 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
         }
         float preScale = mScale;
         mScale = scale;
+        setScale=mScale;
         int sX = getScrollX();
         int sY = getScrollY();
         int dx = (int) ((sX + centerX) * (scale / preScale - 1));
