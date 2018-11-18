@@ -51,4 +51,9 @@ public class MainActivity extends Activity {
     {
         startActivity(new Intent(this,ImageViewerActivity.class));
     }
+    //区块方法，加载大图
+    public void loadLargeImage(View view)
+    {
+        startActivity(new Intent(this,SingleDemoActivity.class));
+    }
 }

@@ -55,4 +55,11 @@
         android:onClick="loadLargeSurfaceViewImage"
         android:text="surfaceview局部加载大图"
         android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="loadLargeImage"
+        android:text="分块局部加载大图"
+        android:textAllCaps="false" />
 </LinearLayout>
