@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -63,6 +64,7 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
     private final int mMaximumVelocity;
     private final ScaleGestureDetector scaleGestureDetector;
     private final Paint paint;
+    private final Paint paintPath;
     private int mDrawableWidth;
     private int mDrawableHeight;
     private float mScale = 1;
@@ -113,8 +115,20 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
         paint = new Paint();
+      /*  paint.setColor(Color.RED);
+        paint.setStrokeWidth(3);
+        paint.setAntiAlias(true);*/
+
         paint.setColor(Color.RED);
+        paint.setStrokeWidth(9);
         paint.setAntiAlias(true);
+
+        paintPath=new Paint();
+        paintPath.setColor(Color.RED);
+        paintPath.setStyle(Paint.Style.STROKE);
+        paintPath.setStrokeWidth(9);
+        paintPath.setAntiAlias(true);
+
     }
 
     @Override
@@ -470,13 +484,29 @@ public class LargeImageView extends View implements BlockImageLoader.OnImageLoad
                 }
             }
 
-            for(PointF point:mapScalePointForDraw)
-            {
-                canvas.drawPoint(point.x*getScale(),point.y*getScale(),paint);
-            }
+            drawMapScalePoint(canvas);
             canvas.restoreToCount(saveCount);
         }
     }
+
+    public void drawMapScalePoint(Canvas canvas)
+    {
+        path.rewind();
+        if(mapScalePointForDraw.size()>0)
+        {
+
+            path.moveTo(mapScalePointForDraw.get(0).x*getScale(),mapScalePointForDraw.get(0).y*getScale());
+            for(PointF point:mapScalePointForDraw)
+            {
+                canvas.drawCircle(point.x*getScale(),point.y*getScale(), 15,paint);
+                path.lineTo(point.x*getScale(),point.y*getScale());
+            }
+             canvas.drawPath(path,paintPath);
+
+        }
+    }
+
+    Path path=new Path();
     public void clearPoint()
     {
         mapScalePointForDraw.clear();

@@ -34,7 +34,7 @@
     <com.example.bm.photoview.largeImageDemo.LargeImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#ccc"
         android:scrollbars="vertical|horizontal" />
 
