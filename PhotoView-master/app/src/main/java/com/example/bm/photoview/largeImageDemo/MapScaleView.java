@@ -60,7 +60,7 @@ public class MapScaleView extends View {
         paint.setStrokeWidth(9);
         paint.setAntiAlias(true);
 
-        textPaint.setTextSize(50);
+        textPaint.setTextSize(80);
         textPaint.setColor(Color.RED);
         textPaint.setStyle(Paint.Style.STROKE);
         updateMapScaleView(setScale);
@@ -162,7 +162,7 @@ public class MapScaleView extends View {
         path.lineTo(horizonEndX,rightEndPointY);
         //右竖线
         path.lineTo(horizonEndX,startLeftPointY);
-        canvas.drawText(showMeter+"m",getWidth()/2,getHeight()/2,paint);
+        canvas.drawText(showMeter+"m",getWidth()/2,getHeight()/2,textPaint);
         canvas.drawPath(path,paint);
     }
 }

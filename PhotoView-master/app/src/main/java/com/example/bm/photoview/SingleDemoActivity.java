@@ -99,6 +99,7 @@ public class SingleDemoActivity extends FragmentActivity {
                             mapScaleView.init(largeImageView.mapScalePointSetting.get(0),
                                     largeImageView.mapScalePointSetting.get(1),20,largeImageView.setScale
                                     );
+                            mapScaleView.invalidate();
                         }
                     }
                     break;
