@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:id="@+id/mapScaleView"
         android:background="#c4edc1"
-        android:layout_height="150dp" />
+        android:layout_height="60dp" />
     <com.example.bm.photoview.largeImageDemo.LargeImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"

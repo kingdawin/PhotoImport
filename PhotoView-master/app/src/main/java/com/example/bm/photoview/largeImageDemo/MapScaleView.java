@@ -29,15 +29,30 @@ public class MapScaleView extends View {
     //用户设置的显示值
     int setMeter;
     int showMeter;
+    int desiredWidth;
+    int desireHeight;
     public MapScaleView(Context context) {
         super(context);
     }
     public MapScaleView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public MapScaleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(9);
+        paint.setAntiAlias(true);
+
+        textPaint.setTextSize(35);
+        textPaint.setColor(Color.RED);
+        textPaint.setStyle(Paint.Style.STROKE);
+
+        float density = getResources().getDisplayMetrics().density;
+        desiredWidth = (int) (100 * density);
+        desireHeight= (int) (textPaint.getTextSize() * 3 + textPaint.getStrokeWidth());
+
     }
 
     /**
@@ -49,20 +64,14 @@ public class MapScaleView extends View {
      */
     public void init(PointF startPoint, PointF endPoint,int setMeter, float setScale)
     {
+
         Log.i(TAG,"init setScale="+setScale);
         levelIndex=searchLevelIndex(setMeter);
         //初始值，TODO：假设用户输入值在要求的值，如果随意设定还要求最近值
         showMeter=setMeter;
         calculateMeterPerPix(startPoint,endPoint);
         meterPerPixBase=meterPerPix*setScale;
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(9);
-        paint.setAntiAlias(true);
 
-        textPaint.setTextSize(80);
-        textPaint.setColor(Color.RED);
-        textPaint.setStyle(Paint.Style.STROKE);
         updateMapScaleView(setScale);
     }
     public void calculateMeterPerPix(PointF startPoint,PointF endPoint)
@@ -93,7 +102,28 @@ public class MapScaleView extends View {
         //没有找到
         return -1;
     }
+    //直接继承View的自定义控件需要重写此方法，并设置wrap_content时的自身大小，否则布局中使用wrap_conent相当于使用了match_parent
+    //因为wrap_content对于specMode是AT_MOST
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width=measureDimension(desiredWidth,widthMeasureSpec);
+        int height=measureDimension(desireHeight,heightMeasureSpec);
+        setMeasuredDimension(width,height);
+    }
 
+    private int measureDimension(int desiredSize, int measureSpec) {
+        int mode = View.MeasureSpec.getMode(measureSpec);
+        int size = View.MeasureSpec.getSize(measureSpec);
+        //精确模式使用布局设的dp作为宽高
+        if (mode == View.MeasureSpec.EXACTLY) {
+            return size;
+        } else if (mode == View.MeasureSpec.AT_MOST) {//wrap_content需要给定大小，否则和match_parent一样
+            return Math.min(desiredSize, size);
+        } else {
+            return desiredSize;
+        }
+    }
     public void updateMapScaleView(float currentScale)
     {
         if(showMeter==0)
@@ -151,15 +181,19 @@ public class MapScaleView extends View {
     float rightEndPointY=20;
     Paint paint=new Paint();
     Paint textPaint=new Paint();
+    private final int outLineHeight=20;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         path.rewind();
+        startLeftPointY=getHeight()/2-outLineHeight;
+        //右竖线起点
         path.moveTo(startLeftPointX,startLeftPointY);
-        path.lineTo(rightEndPointX,rightEndPointY);
+        //右竖线终点
+        path.lineTo(rightEndPointX,startLeftPointY+outLineHeight);
         //横线结束点
         float horizonEndX=(float)(rightEndPointX+currentWidthPix);
-        path.lineTo(horizonEndX,rightEndPointY);
+        path.lineTo(horizonEndX,startLeftPointY+outLineHeight);
         //右竖线
         path.lineTo(horizonEndX,startLeftPointY);
         canvas.drawText(showMeter+"m",getWidth()/2,getHeight()/2,textPaint);

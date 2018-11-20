@@ -97,7 +97,7 @@ public class SingleDemoActivity extends FragmentActivity {
                         if(largeImageView.mapScalePointSetting.size()==2)
                         {
                             mapScaleView.init(largeImageView.mapScalePointSetting.get(0),
-                                    largeImageView.mapScalePointSetting.get(1),20,largeImageView.setScale
+                                    largeImageView.mapScalePointSetting.get(1),20,largeImageView.getScale()
                                     );
                             mapScaleView.invalidate();
                         }
