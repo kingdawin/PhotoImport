@@ -115,7 +115,7 @@ public class MapScaleView extends View {
             }else
                 {
                     //没有找到设定的pix,用 超过最大设定像素值 显示
-                    levelIndex=Meters.length-1;
+                    levelIndex=0;
                     desireMeter=Meters[levelIndex];
                     currentWidthPix=desireMeter/currentMeterPerPix;
                     break;
@@ -123,7 +123,7 @@ public class MapScaleView extends View {
         }
 
         //缩小地图
-        while(currentWidthPix<MAX_Width)
+        while(currentWidthPix<MIN_Width)
         {
             if(levelIndex+1<Meters.length)
             {
@@ -131,7 +131,7 @@ public class MapScaleView extends View {
                 currentWidthPix=desireMeter/currentMeterPerPix;
             }else{
                 //没有找到设定的pix
-                levelIndex=0;
+                levelIndex=Meters.length-1;
                 desireMeter=Meters[levelIndex];
                 currentWidthPix=desireMeter/currentMeterPerPix;
                 break;
