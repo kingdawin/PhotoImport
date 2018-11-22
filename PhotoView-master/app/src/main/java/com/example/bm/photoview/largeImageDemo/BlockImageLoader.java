@@ -37,7 +37,17 @@ import java.util.Map;
  * create by LuckyJayce at 2017/3/14
  */
 public class BlockImageLoader {
-
+    //(宽+高)/4+0/2  基准图片块宽高
+    /*
+    * |----------------|
+    * |                |
+    * |                |
+    * |                |
+    * |                |
+    * |----------------|
+    * width+height
+    *
+    * */
     private static int BASE_BLOCKSIZE;
 
     private Context context;
@@ -154,6 +164,7 @@ public class BlockImageLoader {
         if (loadData.thumbnailBlockData == null) {
             int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
             int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+            //图纸像素点 比 屏幕1/4像素点
             int s = (int) Math.ceil(Math.sqrt(1.0 * (imageWidth * imageHeight) / ((screenWidth / 2) * (screenHeight / 2))));
             int thumbnailScale = getNearScale(s);
             if (thumbnailScale < s) {
@@ -312,6 +323,20 @@ public class BlockImageLoader {
             cacheStartCol = startCol;
         }
 
+        /*
+         *
+         * |-------------------|
+         * |   0     |     1   |
+         * |         |         |
+         * --------------------
+         * |         |         |
+         * |   2     |     3   |
+         * |         |         |
+         * --------------------
+         *
+         *
+         *
+         */
         //需要加载的图片块的坐标，Position其实就是[row,col]
         List<Position> needShowPositions = new LinkedList<>();
         /**
@@ -639,14 +664,14 @@ public class BlockImageLoader {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
-
+    //显示图片宽
     int getWidth() {
         if (mLoadData == null) {
             return 0;
         }
         return mLoadData.imageWidth;
     }
-
+    //显示图片高
     int getHeight() {
         if (mLoadData == null) {
             return 0;
