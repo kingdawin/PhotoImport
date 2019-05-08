@@ -56,4 +56,50 @@ public class MainActivity extends Activity {
     {
         startActivity(new Intent(this,SingleDemoActivity.class));
     }
+    
+    
+    public void syncUserDB(File db){
+        final boolean isExist = db.exists();
+        // 云端是否存在DB
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+            }
+        }).flatMap(new Function<String, Observable<?>>() {
+            @Override
+            public Observable<?> apply(String o) throws Exception {
+                // 四种情况
+                // 本地没有 云端有 下载
+                download();
+                // 本地有 云端没有  上传
+                upload();
+                // 本地有 云端有 版本版本检查接口 上传/下载/什么都不干
+                checkUserDBVersion();
+                // 本地 云端 均无 什么都不干
+                return null;
+            }
+        }).map(new Function<Object, Object>() {
+            @Override
+            public Object apply(Object o) throws Exception {
+                return null;
+            }
+        }).subscribe();
+    }
+
+    private boolean upload(){
+        return false;
+    }
+
+    private boolean download(){
+        return false;
+    }
+
+    private int checkUserDBVersion(){
+        //0
+        //1
+        //2
+        return  0;
+    }
+
+
 }
